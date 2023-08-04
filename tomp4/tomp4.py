@@ -82,12 +82,10 @@ def processImage(path):
 
 def webp_mp4(filename, outfile):
     try:
-        images = processImage("%s" % filename)
-        fps = 20
-        if len(images) < 60:
-            fps = 8
+        images = processImage(f"{filename}")
+        fps = 8 if len(images) < 60 else 20
         clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(images, fps=fps)
-        
+
         clip.write_videofile(
             filename = outfile,
             codec = "mpeg4"
@@ -97,7 +95,7 @@ def webp_mp4(filename, outfile):
             os.remove(image)
         return [outfile]
     except:
-        print("FAILED TO CONVERT "+filename)
+        print(f"FAILED TO CONVERT {filename}")
         print("Oops!", sys.exc_info()[0], "occurred.")
         print("Next entry.")
         print()
@@ -108,7 +106,7 @@ def gif_mp4(filename, outfile):
         clip = mp.VideoFileClip(filename)
         clip.write_videofile(outfile)
     except:
-        print("FAILED TO CONVERT "+filename)
+        print(f"FAILED TO CONVERT {filename}")
         print("Oops!", sys.exc_info()[0], "occurred.")
         print("Next entry.")
         print()
@@ -122,9 +120,9 @@ import shutil
 
 for file in os.listdir(dir):
     if file.endswith(".webp") or file.endswith(".gif") or file.endswith(".WEBP") or file.endswith(".GIF"):
-        shutil.move(dir + "/" + file, dir + "/old_converted_gifs/" + file)
-        filename = dir + "/old_converted_gifs/" + file
-        outfile = dir + "/" + os.path.splitext(file)[0] + ".mp4"
+        shutil.move(f"{dir}/{file}", f"{dir}/old_converted_gifs/{file}")
+        filename = f"{dir}/old_converted_gifs/{file}"
+        outfile = f"{dir}/{os.path.splitext(file)[0]}.mp4"
 
     if file.endswith(".webp") or file.endswith(".WEBP"):
         webp_mp4(filename, outfile)
